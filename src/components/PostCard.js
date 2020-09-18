@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -22,7 +23,7 @@ function PostCard({ post: { _id, title, description, imageUrl } }) {
 
   return (
     <Card className={classes.card}>
-      <CardActionArea>
+      <CardActionArea component={Link} to={`/post/${_id}`}>
         <CardMedia
           className={classes.media}
           image={imageUrl}
