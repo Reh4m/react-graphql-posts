@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Container, Grid, Button } from "@material-ui/core";
 
 import PostCard from "../components/PostCard";
+import SkeletonLoader from "../components/SkeletonLoader";
+
 import { INFINITE_SCROLL_POSTS } from "../util/graphql/queries";
 import { useQuery } from "@apollo/client";
 
@@ -49,18 +51,22 @@ function Home() {
     });
   }
 
-  if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
-
   return (
     <Container>
       <Grid container>
-        {getPosts.posts &&
-          getPosts.posts.map((post) => (
-            <Grid item xs={12} sm={6} md={4} key={post._id}>
-              <PostCard post={post} />
-            </Grid>
-          ))}
+        {loading
+          ? Array.from(new Array(3)).map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <SkeletonLoader />
+              </Grid>
+            ))
+          : getPosts.posts &&
+            getPosts.posts.map((post) => (
+              <Grid item xs={12} sm={6} md={4} key={post._id}>
+                <PostCard post={post} />
+              </Grid>
+            ))}
+        {error}
       </Grid>
       <Grid container justify="center" alignItems="center">
         <Button variant="contained" color="secondary" onClick={showMorePosts}>
