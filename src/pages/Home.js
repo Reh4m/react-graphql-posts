@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Grid, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 import PostCard from "../components/PostCard";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -7,10 +9,20 @@ import SkeletonLoader from "../components/SkeletonLoader";
 import { INFINITE_SCROLL_POSTS } from "../util/graphql/queries";
 import { useQuery } from "@apollo/client";
 
+const useStyles = makeStyles((theme) => ({
+  spacing: {
+    margin: theme.spacing(2),
+  },
+}));
+
 let pageSize = 6;
 let pageNum = 1;
 
 function Home() {
+  const classes = useStyles();
+
+  const [showMore, setShowMore] = useState(true);
+
   const variables = {
     pageNum: 1,
     pageSize,
@@ -25,6 +37,14 @@ function Home() {
   } = useQuery(INFINITE_SCROLL_POSTS, {
     variables,
   });
+
+  useEffect(() => {
+    if (getPosts && getPosts.hasMore) {
+      setShowMore(true);
+    } else {
+      setShowMore(false);
+    }
+  }, [getPosts]);
 
   function showMorePosts() {
     pageNum++;
@@ -69,9 +89,21 @@ function Home() {
         {error}
       </Grid>
       <Grid container justify="center" alignItems="center">
-        <Button variant="contained" color="secondary" onClick={showMorePosts}>
-          Fetch More
-        </Button>
+        <div className={classes.spacing}>
+          {showMore ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={showMorePosts}
+            >
+              Fetch More
+            </Button>
+          ) : (
+            <Typography color="error" variant="h6" gutterBottom>
+              You’ve reached the end of the list.
+            </Typography>
+          )}
+        </div>
       </Grid>
     </Container>
   );
