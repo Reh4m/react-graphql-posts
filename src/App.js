@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Header from "./layouts/Header";
+import Header from "./layouts/header";
 import Home from "./pages/Home";
 
 const useStyles = makeStyles((theme) => ({
